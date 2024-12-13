@@ -1,0 +1,5 @@
+com/pointscontainer/container/PointsContainer.class
+com/pointscontainer/errors/EmptyContainerException.class
+com/pointscontainer/App.class
+com/pointscontainer/container/Point.class
+com/pointscontainer/container/ContainerOps.class
