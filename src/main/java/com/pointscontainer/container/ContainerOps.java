@@ -1,6 +1,8 @@
 package com.pointscontainer.container;
 import java.util.Iterator;
 
+import com.pointscontainer.errors.CapacityExceededException;
+
 /**
  * A generic interface for managing a container of elements with various
  * operations

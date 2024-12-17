@@ -15,43 +15,45 @@ public class PointsContainerTest {
         PointsContainer unLimitedList = new PointsContainer();
 
         // Create a limited PointsContainer with a capacity of 2
-        PointsContainer limitedList = new PointsContainer(2);
+        PointsContainer limitedList = new PointsContainer(3);
 
         // Create Point objects
-        Point p1 = new Point(3);
-        Point p2 = new Point(5);
+        Point p1 = new Point(3, 4);
+        Point p2 = new Point(5, 6);
 
         // Insert points into the unlimited list
         unLimitedList.insert(p1, 0); // Valid insertion
-        unLimitedList.insert(p2, 1); // Valid insertion at the end
+        unLimitedList.insert(p1, 1); // Valid insertion at the end
 
         // Insert points into the limited list
         limitedList.insert(p1, 0); // Valid insertion
         limitedList.insert(p2, 1); // Valid insertion at the end
 
         // Attempt to insert a third point into the limited list
-        limitedList.insert(new Point(7), 2); // This should not succeed if the list is limited
+        limitedList.insert(new Point(7, 3), 2); // This should not succeed if the list is limited
 
         // Check the size of the unlimited list
         assertEquals(2, unLimitedList.size());
 
         // Check the size of the limited list
-        assertEquals(2, limitedList.size()); // Size should still be 2 after trying to insert the third point
+        assertEquals(3, limitedList.size()); // Size should still be 2 after trying to insert the third point
 
-        // Verify the contents of the unlimited list
+        // // Verify the contents of the unlimited list
         Iterator<Point> iterator = unLimitedList.iterator();
         assertTrue(iterator.hasNext());
-        assertEquals(3, iterator.next().data);
+        assertEquals(5.0, iterator.next().magnitude(), 1);
         assertTrue(iterator.hasNext());
-        assertEquals(5, iterator.next().data);
-        assertFalse(iterator.hasNext());
+        assertEquals(Math.sqrt(61), iterator.next().magnitude(), 1);
 
         // Verify the contents of the limited list
         Iterator<Point> limitedIterator = limitedList.iterator();
         assertTrue(limitedIterator.hasNext());
-        assertEquals(3, limitedIterator.next().data);
+        assertEquals(5.0, limitedIterator.next().magnitude(), 1);
         assertTrue(limitedIterator.hasNext());
-        assertEquals(5, limitedIterator.next().data);
-        assertFalse(limitedIterator.hasNext());
+        assertEquals(Math.sqrt(61), limitedIterator.next().magnitude(), 1);
+        assertTrue(limitedIterator.hasNext());
+        assertEquals(Math.sqrt(58), limitedIterator.next().magnitude(), 1);
+        assertFalse(iterator.hasNext());
+        
     }
 }

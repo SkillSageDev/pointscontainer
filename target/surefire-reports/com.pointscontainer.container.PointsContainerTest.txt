@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.pointscontainer.container.PointsContainerTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 5.772 s <<< FAILURE! - in com.pointscontainer.container.PointsContainerTest
+testInsert(com.pointscontainer.container.PointsContainerTest)  Time elapsed: 5.772 s  <<< ERROR!
+java.lang.OutOfMemoryError: Java heap space
+	at com.pointscontainer.container.PointsContainerTest.testInsert(PointsContainerTest.java:42)
+

@@ -1,11 +1,17 @@
 package com.pointscontainer.container;
 
 public class Point {
-    public int data;
+    public double x;
+    public double y;
     Point next;
 
-    public Point(int data) {
-        this.data = data;
+    public Point(double x, double y) {
+        this.x = x;
+        this.y = y;
         this.next = null;
+    }
+
+    public double magnitude(){
+        return Math.sqrt(x*x + y*x);
     }
 }
