@@ -147,16 +147,16 @@ public class PointsContainer implements ContainerOps<Point> {
             list.add(element);
             size++;
         } else {
-            Point temp = head;
             if (head == null) {
-                head = element;
+                head = element; // Set head to the new Point
             } else {
+                Point temp = head;
                 while (temp.next != null) {
-                    temp = temp.next;
+                    temp = temp.next; // Traverse to the end of the list
                 }
-                temp.next = element;
-                size++;
+                temp.next = element; // Link the new Point at the end
             }
+            size++;
         }
     }
 
@@ -184,14 +184,39 @@ public class PointsContainer implements ContainerOps<Point> {
 
     @Override
     public int indexOf(Point element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'indexOf'");
+        if (list != null) {
+            return list.indexOf(element);
+        } else {
+            Point temp = head;
+            int counter = 0;
+            while(temp != null){
+                if(temp.equals(element)){
+                    return counter;
+                }
+                temp = temp.next;
+                counter++;
+            }
+            return -1;
+        }
     }
 
     @Override
     public int lastIndexOf(Point element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'lastIndexOf'");
+        if (list != null) {
+            return list.lastIndexOf(element);
+        } else {
+            Point temp = head;
+            int counter = 0;
+            int result = -1;
+            while (temp != null) {
+                if (temp.magnitude() == element.magnitude()) {
+                    result = counter;
+                }
+                temp = temp.next;
+                counter++;
+            }
+            return result;
+        }
     }
 
     @Override
