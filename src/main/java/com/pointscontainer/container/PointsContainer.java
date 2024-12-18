@@ -162,8 +162,24 @@ public class PointsContainer implements ContainerOps<Point> {
 
     @Override
     public boolean search(Point element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'search'");
+        if (list != null) {
+            for (Point point : list) {
+                if (point.equals(element)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            Point temp = head;
+            while (temp != null) {
+                if (temp.equals(element)) {
+                    return true;
+                } else {
+                    temp = temp.next;
+                }
+            }
+            return false;
+        }
     }
 
     @Override

@@ -23,8 +23,11 @@ public class App {
         PointsContainer l2 = new PointsContainer(2);
         System.out.println(l2.maxSize);
         System.out.println(l2.size);
+        l1.add(p3);
+        l1.insert(p1, 0);
         l2.add(p3);
         l2.insert(p1, 0);
+        System.out.println(l1.search(p2));
         // l2.insert(p1, 0);
         // l2.add(p3);
         // l2.insert(p2, 1);
