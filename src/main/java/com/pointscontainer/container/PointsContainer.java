@@ -1,6 +1,7 @@
 package com.pointscontainer.container;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -188,8 +189,8 @@ public class PointsContainer implements ContainerOps<Point> {
         } else {
             Point temp = head;
             int counter = 0;
-            while(temp != null){
-                if(temp.equals(element)){
+            while (temp != null) {
+                if (temp.equals(element)) {
                     return counter;
                 }
                 temp = temp.next;
@@ -220,16 +221,15 @@ public class PointsContainer implements ContainerOps<Point> {
 
     @Override
     public Point get(int index) {
-        if(index < 0){
+        if (index < 0) {
             throw new IndexOutOfBoundsException(index);
-        }
-        else if (list != null) {
+        } else if (list != null) {
             return list.get(index);
         } else {
             Point temp = head;
             int counter = 0;
-            while(temp != null){
-                if(counter == index){
+            while (temp != null) {
+                if (counter == index) {
                     return temp;
                 }
                 temp = temp.next;
@@ -241,8 +241,59 @@ public class PointsContainer implements ContainerOps<Point> {
 
     @Override
     public void sort() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sort'");
+        if (list != null) {
+            Comparator<Point> magnitudeComparator = (p1, p2) -> Double.compare(p1.magnitude(), p2.magnitude());
+            list.sort(magnitudeComparator);
+        } else {
+            Point temp = head;
+            int itr = 0;
+            boolean swapped;
+
+            // Iterating over the whole linked list
+            while (itr < size) {
+                Point traversePoint = head;
+                Point prevPoint = head;
+                swapped = false;
+
+                while (traversePoint.next != null) {
+
+                    // Temporary pointer to store the next
+                    // pointer of traversePoint
+                    Point ptr = traversePoint.next;
+                    if (traversePoint.magnitude() > ptr.magnitude()) {
+                        swapped = true;
+                        if (traversePoint == head) {
+
+                            // Performing swap operations and
+                            // updating the head of the linked
+                            // list
+                            traversePoint.next = ptr.next;
+                            ptr.next = traversePoint;
+                            prevPoint = ptr;
+                            head = prevPoint;
+                        } else {
+
+                            // Performing swap operation
+                            traversePoint.next = ptr.next;
+                            ptr.next = traversePoint;
+                            prevPoint.next = ptr;
+                            prevPoint = ptr;
+                        }
+                        continue;
+                    }
+                    prevPoint = traversePoint;
+                    traversePoint = traversePoint.next;
+                }
+
+                // If no swap occurred, break the loop
+                if (!swapped) {
+                    break;
+                }
+
+                itr++;
+            }
+
+        }
     }
 
     @Override

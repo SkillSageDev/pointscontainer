@@ -21,7 +21,7 @@ public class App {
         Point p3 = new Point(5, 6);
         Point p4 = new Point(1, 2);
         PointsContainer l1 = new PointsContainer();
-        PointsContainer l2 = new PointsContainer(2);
+        PointsContainer l2 = new PointsContainer(3);
         System.out.println(l2.maxSize);
         System.out.println(l2.size);
         l1.insert(p2, 0);
@@ -29,15 +29,20 @@ public class App {
         l1.add(p3);
         l1.add(p4);
         System.out.println(l1.get(0).y);
-        l2.add(p4);
+        l2.add(p3);
+        l2.add(p2);
         l2.insert(p1, 0);
-        System.out.println(l2.get(5));
+        // System.out.println(l2.get(5));
         // l2.insert(p1, 0);
         // l2.add(p3);
         // l2.insert(p2, 1);
         System.out.println("after insert");
         Iterator<Point> it = l1.iterator();
         Iterator<Point> itL = l2.iterator();
-        display(itL);
+        display(it);
+        System.out.println();
+        l1.sort();
+        Iterator<Point> itLS = l1.iterator();
+        display(itLS);
     }
 }
