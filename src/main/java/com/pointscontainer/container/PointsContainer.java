@@ -31,9 +31,6 @@ public class PointsContainer implements ContainerOps<Point> {
 
     @Override
     public void insert(Point element, int index) {
-        Point temp = head;
-        int counter = 0;
-
         if (list != null) {
             if (index > maxSize || index < 0) {
                 throw new IndexOutOfBoundsException(index);
@@ -48,6 +45,8 @@ public class PointsContainer implements ContainerOps<Point> {
             if (index > size || index < 0) {
                 throw new IndexOutOfBoundsException(index);
             }
+            Point temp = head;
+            int counter = 0;
             if (index == 0) {
                 element.next = head;
                 head = element;
@@ -221,8 +220,23 @@ public class PointsContainer implements ContainerOps<Point> {
 
     @Override
     public Point get(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        if(index < 0){
+            throw new IndexOutOfBoundsException(index);
+        }
+        else if (list != null) {
+            return list.get(index);
+        } else {
+            Point temp = head;
+            int counter = 0;
+            while(temp != null){
+                if(counter == index){
+                    return temp;
+                }
+                temp = temp.next;
+                counter++;
+            }
+            throw new IndexOutOfBoundsException(index);
+        }
     }
 
     @Override

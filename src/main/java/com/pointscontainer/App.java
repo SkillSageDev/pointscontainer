@@ -28,10 +28,10 @@ public class App {
         l1.add(p1);
         l1.add(p3);
         l1.add(p4);
-        System.out.println(l1.lastIndexOf(p4));
+        System.out.println(l1.get(0).y);
         l2.add(p4);
         l2.insert(p1, 0);
-        System.out.println(l1.search(p2));
+        System.out.println(l2.get(5));
         // l2.insert(p1, 0);
         // l2.add(p3);
         // l2.insert(p2, 1);
