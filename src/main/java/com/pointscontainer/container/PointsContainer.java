@@ -1,29 +1,32 @@
 package com.pointscontainer.container;
 
+import com.pointscontainer.errors.*;
+import com.pointscontainer.iterators.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import com.pointscontainer.Iterator.EmptyIterator;
-import com.pointscontainer.errors.CapacityExceededException;
-import com.pointscontainer.errors.EmptyContainerException;
-
 public class PointsContainer implements ContainerOps<Point> {
 
-    // unlimited list
-    Point head;
-    public int size;
+    // Linked list for the unlimited case
+    private Point head;
+    private int size;
 
-    // limted list
-    List<Point> list;
-    public int maxSize;
+    // ArrayList for the limited case
+    private List<Point> list;
+    private int maxSize;
 
+    // Constructor for the unlimited list
     public PointsContainer() {
         this.head = null;
         this.size = 0;
+        this.maxSize = -1;  // No size limit
     }
 
+    // Constructor for the limited list
     public PointsContainer(int capacity) {
         this.list = new ArrayList<>(capacity);
         this.maxSize = capacity;
@@ -32,153 +35,126 @@ public class PointsContainer implements ContainerOps<Point> {
 
     @Override
     public void insert(Point element, int index) {
-        if (list != null) {
-            if (index > maxSize || index < 0) {
-                throw new IndexOutOfBoundsException(index);
+        if (list != null) {  // Limited list (ArrayList)
+            if (index < 0 || index > size) {
+                throw new IndexOutOfBoundsException("Invalid index.");
             } else if (size >= maxSize) {
-                throw new CapacityExceededException("Error: list is already full!, no space for more.");
+                throw new CapacityExceededException("Error: list is full!");
             }
             list.add(index, element);
-            size++;
-
-        } else {
-            // unlimited list
-            if (index > size || index < 0) {
-                throw new IndexOutOfBoundsException(index);
+        } else {  // Unlimited list (Linked list)
+            if (index < 0 || index > size) {
+                throw new IndexOutOfBoundsException("Invalid index.");
             }
-            Point temp = head;
-            int counter = 0;
+
+            Point newNode = new Point(element.getX(), element.getY());
             if (index == 0) {
-                element.next = head;
-                head = element;
-                size++;
+                newNode.setNext(head);
+                head = newNode;
             } else {
-                // unlimited list
-                while (temp != null) {
-                    if (counter == index - 1) {
-                        temp.next = element.next;
-                        temp.next = element;
-                        size++;
-                        break;
-                    }
-                    temp = temp.next;
-                    counter++;
+                Point temp = head;
+                for (int i = 0; i < index - 1; i++) {
+                    temp = temp.getNext();
                 }
+                newNode.setNext(temp.getNext());
+                temp.setNext(newNode);
             }
         }
+        size++;
     }
 
     @Override
     public void delete(Point element) {
-        Point temp = head;
+        if (list != null) {  // Limited list (ArrayList)
+            if (!list.remove(element)) {
+                throw new PointNotFoundException("Point " + element + " not found.");
+            }
+        } else {  // Unlimited list (Linked list)
+            if (head == null) throw new EmptyContainerException("The container is empty.");
 
-        if (head == null && list == null) {
-            throw new EmptyContainerException("The list is empty dude!");
-        }
-
-        else if (list != null) {
-            list.remove(element);
-            size--;
-        }
-
-        else if (head != null) {
-            if (head == element) {
-                head = head.next;
+            if (head.equals(element)) {
+                head = head.getNext();
                 size--;
-            } else {
-                while (temp != null) {
-                    if (temp.next == element) {
-                        temp.next = temp.next.next;
-                        size--;
-                    }
-                    temp = temp.next;
-                }
+                return;
             }
 
+            Point temp = head;
+            while (temp.getNext() != null) {
+                if (temp.getNext().equals(element)) {
+                    temp.setNext(temp.getNext().getNext());
+                    size--;
+                    return;
+                }
+                temp = temp.getNext();
+            }
+            throw new PointNotFoundException("Point " + element + " not found.");
         }
+        size--;
     }
 
     @Override
     public Point deleteAt(int index) {
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException("Invalid index.");
 
-        if (list == null && head == null) {
-            throw new EmptyContainerException("it is empty dude!");
-        }
+        if (list != null) {  // Limited list (ArrayList)
+            return list.remove(index);
+        } else {  // Unlimited list (Linked list)
+            if (head == null) throw new EmptyContainerException("The list is empty!");
 
-        if (index > maxSize || index < 0) {
-            throw new IndexOutOfBoundsException(index);
-        }
-        // limited list
-        if (list != null || head != null) {
-            if (list != null) {
+            if (index == 0) {
+                Point deleted = head;
+                head = head.getNext();
                 size--;
-                return list.remove(index);
-            } else {
-                Point temp = head;
-                int counter = 0;
-                if (index == 0) {
-                    Point p1 = head;
-                    head = head.next;
-                    return p1;
-                }
-                while (temp != null) {
-                    if (counter == index - 1) {
-                        Point point = temp.next;
-                        temp.next = temp.next.next;
-                        size--;
-                        return point;
-                    }
-                    temp = temp.next;
-                    counter++;
-                }
+                return deleted;
             }
-        }
-        throw new EmptyContainerException("Error: list is empty.");
-        // unlimited list
 
+            Point temp = head;
+            for (int i = 0; i < index - 1; i++) {
+                temp = temp.getNext();
+            }
+            Point deleted = temp.getNext();
+            temp.setNext(deleted.getNext());
+            size--;
+            return deleted;
+        }
     }
 
     @Override
     public void add(Point element) {
-        if (list != null) {
-            if (size >= maxSize) {
-                throw new CapacityExceededException("Error: list is full!, no space to add more.");
-            }
+        if (list != null) {  // Limited list (ArrayList)
+            if (size >= maxSize) throw new CapacityExceededException("Error: list is full!");
             list.add(element);
-            size++;
-        } else {
+        } else {  // Unlimited list (Linked list)
+            Point newNode = new Point(element.getX(), element.getY());
             if (head == null) {
-                head = element; // Set head to the new Point
+                head = newNode;
             } else {
                 Point temp = head;
-                while (temp.next != null) {
-                    temp = temp.next; // Traverse to the end of the list
+                while (temp.getNext() != null) {
+                    temp = temp.getNext();
                 }
-                temp.next = element; // Link the new Point at the end
+                temp.setNext(newNode);
             }
-            size++;
         }
+        size++;
     }
 
     @Override
     public boolean search(Point element) {
         if (list != null) {
-            for (Point point : list) {
-                if (point.equals(element)) {
-                    return true;
-                }
+            if (!list.contains(element)) {
+                throw new PointNotFoundException("Point " + element + " not found.");
             }
-            return false;
+            return true;
         } else {
             Point temp = head;
             while (temp != null) {
                 if (temp.equals(element)) {
                     return true;
-                } else {
-                    temp = temp.next;
                 }
+                temp = temp.getNext();
             }
-            return false;
+            throw new PointNotFoundException("Point " + element + " not found.");
         }
     }
 
@@ -188,13 +164,11 @@ public class PointsContainer implements ContainerOps<Point> {
             return list.indexOf(element);
         } else {
             Point temp = head;
-            int counter = 0;
+            int index = 0;
             while (temp != null) {
-                if (temp.equals(element)) {
-                    return counter;
-                }
-                temp = temp.next;
-                counter++;
+                if (temp.equals(element)) return index;
+                temp = temp.getNext();
+                index++;
             }
             return -1;
         }
@@ -206,105 +180,63 @@ public class PointsContainer implements ContainerOps<Point> {
             return list.lastIndexOf(element);
         } else {
             Point temp = head;
-            int counter = 0;
-            int result = -1;
+            int index = 0;
+            int lastIndex = -1;
             while (temp != null) {
-                if (temp.magnitude() == element.magnitude()) {
-                    result = counter;
-                }
-                temp = temp.next;
-                counter++;
+                if (temp.equals(element)) lastIndex = index;
+                temp = temp.getNext();
+                index++;
             }
-            return result;
+            return lastIndex;
         }
     }
 
     @Override
     public Point get(int index) {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException(index);
-        } else if (list != null) {
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException("Invalid index.");
+        if (list != null) {
             return list.get(index);
         } else {
             Point temp = head;
-            int counter = 0;
-            while (temp != null) {
-                if (counter == index) {
-                    return temp;
-                }
-                temp = temp.next;
-                counter++;
+            for (int i = 0; i < index; i++) {
+                temp = temp.getNext();
             }
-            throw new IndexOutOfBoundsException(index);
+            return temp;
         }
     }
 
     @Override
     public void sort() {
-        if (list != null) {
-            Comparator<Point> magnitudeComparator = (p1, p2) -> Double.compare(p1.magnitude(), p2.magnitude());
-            list.sort(magnitudeComparator);
-        } else {
+        if (size == 0) throw new EmptyContainerException("The container is empty!");
+
+        if (list != null) {  // For limited list (ArrayList)
+            Collections.sort(list);
+        } else {  // For unlimited list (linked list)
+            List<Point> pointsArray = new ArrayList<>();
             Point temp = head;
-            int itr = 0;
-            boolean swapped;
-
-            // Iterating over the whole linked list
-            while (itr < size) {
-                Point traversePoint = head;
-                Point prevPoint = head;
-                swapped = false;
-
-                while (traversePoint.next != null) {
-
-                    // Temporary pointer to store the next
-                    // pointer of traversePoint
-                    Point ptr = traversePoint.next;
-                    if (traversePoint.magnitude() > ptr.magnitude()) {
-                        swapped = true;
-                        if (traversePoint == head) {
-
-                            // Performing swap operations and
-                            // updating the head of the linked
-                            // list
-                            traversePoint.next = ptr.next;
-                            ptr.next = traversePoint;
-                            prevPoint = ptr;
-                            head = prevPoint;
-                        } else {
-
-                            // Performing swap operation
-                            traversePoint.next = ptr.next;
-                            ptr.next = traversePoint;
-                            prevPoint.next = ptr;
-                            prevPoint = ptr;
-                        }
-                        continue;
-                    }
-                    prevPoint = traversePoint;
-                    traversePoint = traversePoint.next;
-                }
-
-                // If no swap occurred, break the loop
-                if (!swapped) {
-                    break;
-                }
-
-                itr++;
+            int i = 0;
+            while (temp != null) {
+                pointsArray.add(temp);
+                temp = temp.getNext();
             }
 
+            Collections.sort(pointsArray);
+
+            head = pointsArray.get(0);
+            temp = head;
+            for (i = 1; i < pointsArray.size(); i++) {
+                temp.setNext(pointsArray.get(i));
+                temp = temp.getNext();
+            }
+            temp.setNext(null);
         }
     }
 
     @Override
     public void growCapacity(int newCapacity) {
-        List<Point> newList = new ArrayList<>(newCapacity);
-        list = newList;
+        if (maxSize == -1) throw new UnsupportedOperationException("Cannot grow unlimited container.");
+        if (newCapacity <= maxSize) throw new IllegalArgumentException("New capacity must be greater than temp capacity.");
         maxSize = newCapacity;
-        // don't forget
-        if (head == null) {
-            throw new UnsupportedOperationException("You tried to increase the capcaity on unlimited list, stupid!");
-        }
     }
 
     @Override
@@ -314,23 +246,8 @@ public class PointsContainer implements ContainerOps<Point> {
 
     @Override
     public Iterator<Point> iterator() {
-        if (head != null || list != null) {
-            // unlimited
-            if (head != null) {
-                Point temp = head;
-                List<Point> array = new ArrayList<>();
-                while (temp != null) {
-                    array.add(temp);
-                    temp = temp.next;
-                }
-                return array.iterator();
-
-            } else {
-                // limited
-                return list.iterator();
-            }
-        } else {
-            return new EmptyIterator();
-        }
+        if (size == 0) return new EmptyIterator();
+        if (list != null) return list.iterator();
+        return new PointsIterator(head);
     }
 }

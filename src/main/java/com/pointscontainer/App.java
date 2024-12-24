@@ -10,7 +10,7 @@ public class App {
         int i = 1;
         while (it.hasNext()) {
             Point point = it.next();
-            System.out.println("p" + i + ": " + "(" + point.x + ", " + point.y + ")");
+            System.out.println(point);
             i++;
         }
     }
@@ -21,14 +21,15 @@ public class App {
         Point p3 = new Point(5, 6);
         Point p4 = new Point(1, 2);
         PointsContainer l1 = new PointsContainer();
+        PointsContainer l3 = new PointsContainer(0);
         PointsContainer l2 = new PointsContainer(3);
-        System.out.println(l2.maxSize);
-        System.out.println(l2.size);
+        // System.out.println(l2.maxSize);
+        // System.out.println(l2.size);
         l1.insert(p2, 0);
         l1.add(p1);
         l1.add(p3);
         l1.add(p4);
-        System.out.println(l1.get(0).y);
+        System.out.println(l1.get(0));
         l2.add(p3);
         l2.add(p2);
         l2.insert(p1, 0);
@@ -44,5 +45,6 @@ public class App {
         l1.sort();
         Iterator<Point> itLS = l1.iterator();
         display(itLS);
+        l3.sort();
     }
 }

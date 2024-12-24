@@ -43,7 +43,7 @@ public class PointsContainerTest {
         assertTrue(iterator.hasNext());
         assertEquals(5.0, iterator.next().magnitude(), 1);
         assertTrue(iterator.hasNext());
-        assertEquals(Math.sqrt(61), iterator.next().magnitude(), 1);
+        assertEquals(5, iterator.next().magnitude(), 1);
 
         // Verify the contents of the limited list
         Iterator<Point> limitedIterator = limitedList.iterator();

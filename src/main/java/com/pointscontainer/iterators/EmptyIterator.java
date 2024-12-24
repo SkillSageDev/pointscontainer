@@ -1,4 +1,4 @@
-package com.pointscontainer.Iterator;
+package com.pointscontainer.iterators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
